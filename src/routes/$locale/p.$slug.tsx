@@ -143,7 +143,7 @@ function ProductPage() {
                     id: string;
                     kind: string;
                     reviewer_name: string | null;
-                    reviewed_on: string;
+                    reviewed_on: string | null;
                     conditions_bn: string | null;
                     conditions_en: string | null;
                     strengths_bn: string | null;
@@ -154,7 +154,8 @@ function ProductPage() {
                     <li key={review.id} className="rounded-2xl border border-border bg-surface p-4">
                       <p className="text-xs font-medium text-muted-foreground">
                         {copy.evidence[review.kind as keyof typeof copy.evidence] ?? copy.evidence.staff_demo}{" "}
-                        · {review.reviewer_name} · {formatDate(review.reviewed_on, locale)}
+                        · {review.reviewer_name} ·{" "}
+                        {review.reviewed_on ? formatDate(review.reviewed_on, locale) : ""}
                       </p>
                       {(locale === "bn" ? review.conditions_bn : review.conditions_en) ? (
                         <p className="mt-2 text-sm text-muted-foreground">

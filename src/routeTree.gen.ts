@@ -10,33 +10,192 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LocaleRouteRouteImport } from './routes/$locale/route'
+import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAccountRouteImport } from './routes/$locale/account'
+import { Route as LocaleAuthRouteImport } from './routes/$locale/auth'
+import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
+import { Route as LocaleDiscoverRouteImport } from './routes/$locale/discover'
+import { Route as LocaleHowItWorksRouteImport } from './routes/$locale/how-it-works'
+import { Route as LocaleMostRequestedRouteImport } from './routes/$locale/most-requested'
+import { Route as LocalePoliciesRouteImport } from './routes/$locale/policies'
+import { Route as LocaleReviewsRouteImport } from './routes/$locale/reviews'
+import { Route as LocaleSavedRouteImport } from './routes/$locale/saved'
+import { Route as LocaleBatchesPublicIdRouteImport } from './routes/$locale/batches.$publicId'
+import { Route as LocalePSlugRouteImport } from './routes/$locale/p.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocaleRouteRoute = LocaleRouteRouteImport.update({
+  id: '/$locale',
+  path: '/$locale',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocaleIndexRoute = LocaleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleAccountRoute = LocaleAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleAuthRoute = LocaleAuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleContactRoute = LocaleContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleDiscoverRoute = LocaleDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleHowItWorksRoute = LocaleHowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleMostRequestedRoute = LocaleMostRequestedRouteImport.update({
+  id: '/most-requested',
+  path: '/most-requested',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocalePoliciesRoute = LocalePoliciesRouteImport.update({
+  id: '/policies',
+  path: '/policies',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleReviewsRoute = LocaleReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleSavedRoute = LocaleSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleBatchesPublicIdRoute = LocaleBatchesPublicIdRouteImport.update({
+  id: '/batches/$publicId',
+  path: '/batches/$publicId',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocalePSlugRoute = LocalePSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/account': typeof LocaleAccountRoute
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
+  '/$locale/': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$locale/account': typeof LocaleAccountRoute
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
+  '/$locale': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/account': typeof LocaleAccountRoute
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
+  '/$locale/': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$locale'
+    | '/$locale/account'
+    | '/$locale/auth'
+    | '/$locale/contact'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale/saved'
+    | '/$locale/'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/$locale/account'
+    | '/$locale/auth'
+    | '/$locale/contact'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale/saved'
+    | '/$locale'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/$locale'
+    | '/$locale/account'
+    | '/$locale/auth'
+    | '/$locale/contact'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale/saved'
+    | '/$locale/'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LocaleRouteRoute: typeof LocaleRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +207,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$locale': {
+      id: '/$locale'
+      path: '/$locale'
+      fullPath: '/$locale'
+      preLoaderRoute: typeof LocaleRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$locale/': {
+      id: '/$locale/'
+      path: '/'
+      fullPath: '/$locale/'
+      preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/account': {
+      id: '/$locale/account'
+      path: '/account'
+      fullPath: '/$locale/account'
+      preLoaderRoute: typeof LocaleAccountRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/auth': {
+      id: '/$locale/auth'
+      path: '/auth'
+      fullPath: '/$locale/auth'
+      preLoaderRoute: typeof LocaleAuthRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/contact': {
+      id: '/$locale/contact'
+      path: '/contact'
+      fullPath: '/$locale/contact'
+      preLoaderRoute: typeof LocaleContactRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/discover': {
+      id: '/$locale/discover'
+      path: '/discover'
+      fullPath: '/$locale/discover'
+      preLoaderRoute: typeof LocaleDiscoverRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/how-it-works': {
+      id: '/$locale/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/$locale/how-it-works'
+      preLoaderRoute: typeof LocaleHowItWorksRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/most-requested': {
+      id: '/$locale/most-requested'
+      path: '/most-requested'
+      fullPath: '/$locale/most-requested'
+      preLoaderRoute: typeof LocaleMostRequestedRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/policies': {
+      id: '/$locale/policies'
+      path: '/policies'
+      fullPath: '/$locale/policies'
+      preLoaderRoute: typeof LocalePoliciesRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/reviews': {
+      id: '/$locale/reviews'
+      path: '/reviews'
+      fullPath: '/$locale/reviews'
+      preLoaderRoute: typeof LocaleReviewsRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/saved': {
+      id: '/$locale/saved'
+      path: '/saved'
+      fullPath: '/$locale/saved'
+      preLoaderRoute: typeof LocaleSavedRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/batches/$publicId': {
+      id: '/$locale/batches/$publicId'
+      path: '/batches/$publicId'
+      fullPath: '/$locale/batches/$publicId'
+      preLoaderRoute: typeof LocaleBatchesPublicIdRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/p/$slug': {
+      id: '/$locale/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/$locale/p/$slug'
+      preLoaderRoute: typeof LocalePSlugRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
   }
 }
 
+interface LocaleRouteRouteChildren {
+  LocaleAccountRoute: typeof LocaleAccountRoute
+  LocaleAuthRoute: typeof LocaleAuthRoute
+  LocaleContactRoute: typeof LocaleContactRoute
+  LocaleDiscoverRoute: typeof LocaleDiscoverRoute
+  LocaleHowItWorksRoute: typeof LocaleHowItWorksRoute
+  LocaleMostRequestedRoute: typeof LocaleMostRequestedRoute
+  LocalePoliciesRoute: typeof LocalePoliciesRoute
+  LocaleReviewsRoute: typeof LocaleReviewsRoute
+  LocaleSavedRoute: typeof LocaleSavedRoute
+  LocaleIndexRoute: typeof LocaleIndexRoute
+  LocaleBatchesPublicIdRoute: typeof LocaleBatchesPublicIdRoute
+  LocalePSlugRoute: typeof LocalePSlugRoute
+}
+
+const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
+  LocaleAccountRoute: LocaleAccountRoute,
+  LocaleAuthRoute: LocaleAuthRoute,
+  LocaleContactRoute: LocaleContactRoute,
+  LocaleDiscoverRoute: LocaleDiscoverRoute,
+  LocaleHowItWorksRoute: LocaleHowItWorksRoute,
+  LocaleMostRequestedRoute: LocaleMostRequestedRoute,
+  LocalePoliciesRoute: LocalePoliciesRoute,
+  LocaleReviewsRoute: LocaleReviewsRoute,
+  LocaleSavedRoute: LocaleSavedRoute,
+  LocaleIndexRoute: LocaleIndexRoute,
+  LocaleBatchesPublicIdRoute: LocaleBatchesPublicIdRoute,
+  LocalePSlugRoute: LocalePSlugRoute,
+}
+
+const LocaleRouteRouteWithChildren = LocaleRouteRoute._addFileChildren(
+  LocaleRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LocaleRouteRoute: LocaleRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

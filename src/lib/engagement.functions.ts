@@ -5,13 +5,49 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const MAX_RESERVATION_QTY = 3;
 const VOTE_RATE_LIMIT = 20; // accepted vote writes per account per hour
 
+function isVerified(claims: unknown) {
+  const c = claims as
+    | { email_verified?: boolean; user_metadata?: { email_verified?: boolean } }
+    | undefined;
+  return Boolean(c?.email_verified ?? c?.user_metadata?.email_verified);
+}
+
+/**
+ * Reaching the interest goal notifies staff for import review. It purchases
+ * nothing and charges nobody. Counters themselves are maintained by database
+ * triggers, so this only queues the one-time staff notification.
+ */
+async function notifyIfGoalReached(campaignId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: campaign } = await supabaseAdmin
+    .from("campaigns")
+    .select("id, vote_count, community_featured, feature_goal_reached_at, products(title_en, slug)")
+    .eq("id", campaignId)
+    .maybeSingle();
+  if (!campaign?.community_featured) return;
+
+  const kind = `interest_goal_reached:${campaignId}`;
+  const { count } = await supabaseAdmin
+    .from("notification_outbox")
+    .select("id", { count: "exact", head: true })
+    .eq("kind", kind);
+  if ((count ?? 0) > 0) return;
+
+  const product = Array.isArray(campaign.products) ? campaign.products[0] : campaign.products;
+  await supabaseAdmin.from("notification_outbox").insert({
+    kind,
+    subject: `Interest goal reached: ${product?.title_en ?? campaignId}`,
+    body: `Campaign ${campaignId} reached ${campaign.vote_count} votes and is now community-featured. Import review is pending; nothing has been purchased.`,
+  });
+}
+
 /** Everything the product page needs to render the signed-in user's own state. */
 export const getMyProductState = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ productId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const [{ data: campaign }, { data: saved }, { data: subscription }] = await Promise.all([
+    const [{ data: campaign }, { data: saved }] = await Promise.all([
       supabase.from("campaigns").select("id").eq("product_id", data.productId).maybeSingle(),
       supabase
         .from("saved_products")
@@ -19,100 +55,37 @@ export const getMyProductState = createServerFn({ method: "POST" })
         .eq("product_id", data.productId)
         .eq("user_id", userId)
         .maybeSingle(),
-      supabase
-        .from("campaign_subscriptions")
-        .select("product_id")
-        .eq("product_id", data.productId)
-        .eq("user_id", userId)
-        .maybeSingle(),
     ]);
 
     let hasVoted = false;
-    let reservations: {
-      id: string;
-      variant_id: string | null;
-      quantity: number;
-      status: string;
-    }[] = [];
+    let subscribed = false;
+    let reservations: { id: string; variant_id: string | null; quantity: number; status: string }[] = [];
 
     if (campaign) {
-      const [{ data: vote }, { data: rows }] = await Promise.all([
-        supabase
-          .from("votes")
-          .select("id")
-          .eq("campaign_id", campaign.id)
-          .eq("user_id", userId)
-          .maybeSingle(),
+      const [{ data: vote }, { data: rows }, { data: sub }] = await Promise.all([
+        supabase.from("votes").select("id").eq("campaign_id", campaign.id).eq("user_id", userId).maybeSingle(),
         supabase
           .from("reservations")
           .select("id, variant_id, quantity, status")
           .eq("campaign_id", campaign.id)
           .eq("user_id", userId)
           .eq("status", "active"),
+        supabase
+          .from("campaign_subscriptions")
+          .select("campaign_id")
+          .eq("campaign_id", campaign.id)
+          .eq("user_id", userId)
+          .maybeSingle(),
       ]);
       hasVoted = Boolean(vote);
       reservations = rows ?? [];
+      subscribed = Boolean(sub);
     }
 
-    return {
-      hasVoted,
-      reservations,
-      saved: Boolean(saved),
-      subscribed: Boolean(subscription),
-    };
+    return { hasVoted, reservations, saved: Boolean(saved), subscribed };
   });
 
-async function refreshCampaignCounts(campaignId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-  const [{ count: voteCount }, { data: reservationRows }, { data: campaign }] = await Promise.all([
-    supabaseAdmin.from("votes").select("id", { count: "exact", head: true }).eq("campaign_id", campaignId),
-    supabaseAdmin
-      .from("reservations")
-      .select("user_id")
-      .eq("campaign_id", campaignId)
-      .eq("status", "active"),
-    supabaseAdmin
-      .from("campaigns")
-      .select("id, product_id, feature_vote_target, community_featured, feature_goal_reached_at")
-      .eq("id", campaignId)
-      .maybeSingle(),
-  ]);
-
-  if (!campaign) return;
-
-  const votes = voteCount ?? 0;
-  const reservingAccounts = new Set((reservationRows ?? []).map((r) => r.user_id)).size;
-  const reachedGoal = votes >= (campaign.feature_vote_target ?? 100);
-  const newlyFeatured = reachedGoal && !campaign.community_featured;
-
-  await supabaseAdmin
-    .from("campaigns")
-    .update({
-      vote_count: votes,
-      reserving_accounts: reservingAccounts,
-      community_featured: reachedGoal ? true : campaign.community_featured,
-      feature_goal_reached_at:
-        reachedGoal && !campaign.feature_goal_reached_at
-          ? new Date().toISOString()
-          : campaign.feature_goal_reached_at,
-    })
-    .eq("id", campaignId);
-
-  if (newlyFeatured) {
-    // Reaching the interest goal notifies staff for import review. It buys nothing.
-    await supabaseAdmin.from("notification_outbox").insert({
-      kind: "interest_goal_reached",
-      audience: "staff",
-      product_id: campaign.product_id,
-      payload: { campaign_id: campaignId, votes },
-    });
-  }
-
-  return { votes, reachedGoal };
-}
-
-/** Set-state, never a toggle: the client says what it wants the vote to be. */
+/** Set-state, never a toggle: the client states what the vote should become. */
 export const setVote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
@@ -120,12 +93,7 @@ export const setVote = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
-    const verified = Boolean(
-      (claims as { email_verified?: boolean; user_metadata?: { email_verified?: boolean } })
-        ?.email_verified ??
-        (claims as { user_metadata?: { email_verified?: boolean } })?.user_metadata?.email_verified,
-    );
-    if (!verified) return { ok: false as const, reason: "email_unverified" as const };
+    if (!isVerified(claims)) return { ok: false as const, reason: "email_unverified" as const };
 
     const { data: campaign } = await supabase
       .from("campaigns")
@@ -157,8 +125,20 @@ export const setVote = createServerFn({ method: "POST" })
       if (error) return { ok: false as const, reason: "error" as const };
     }
 
-    const counts = await refreshCampaignCounts(data.campaignId);
-    return { ok: true as const, voted: data.voted, votes: counts?.votes ?? 0 };
+    await notifyIfGoalReached(data.campaignId);
+
+    const { data: fresh } = await supabase
+      .from("campaigns")
+      .select("vote_count, community_featured")
+      .eq("id", data.campaignId)
+      .maybeSingle();
+
+    return {
+      ok: true as const,
+      voted: data.voted,
+      votes: fresh?.vote_count ?? 0,
+      communityFeatured: fresh?.community_featured ?? false,
+    };
   });
 
 export const setReservation = createServerFn({ method: "POST" })
@@ -170,17 +150,13 @@ export const setReservation = createServerFn({ method: "POST" })
         variantId: z.string().uuid().nullable().optional(),
         quantity: z.number().int().min(1).max(MAX_RESERVATION_QTY),
         subscribe: z.boolean().optional(),
-        productId: z.string().uuid(),
+        acknowledged: z.literal(true),
       })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
-    const verified = Boolean(
-      (claims as { email_verified?: boolean })?.email_verified ??
-        (claims as { user_metadata?: { email_verified?: boolean } })?.user_metadata?.email_verified,
-    );
-    if (!verified) return { ok: false as const, reason: "email_unverified" as const };
+    if (!isVerified(claims)) return { ok: false as const, reason: "email_unverified" as const };
 
     const { data: campaign } = await supabase
       .from("campaigns")
@@ -199,6 +175,7 @@ export const setReservation = createServerFn({ method: "POST" })
         variant_id: data.variantId ?? null,
         quantity: data.quantity,
         status: "active",
+        acknowledged: true,
       },
       { onConflict: "campaign_id,variant_id,user_id" },
     );
@@ -207,10 +184,9 @@ export const setReservation = createServerFn({ method: "POST" })
     if (data.subscribe) {
       await supabase
         .from("campaign_subscriptions")
-        .upsert({ product_id: data.productId, user_id: userId }, { onConflict: "product_id,user_id" });
+        .upsert({ campaign_id: data.campaignId, user_id: userId }, { onConflict: "user_id,campaign_id" });
     }
 
-    await refreshCampaignCounts(data.campaignId);
     return { ok: true as const };
   });
 
@@ -219,22 +195,12 @@ export const cancelReservation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ reservationId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: row } = await supabase
-      .from("reservations")
-      .select("id, campaign_id")
-      .eq("id", data.reservationId)
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (!row) return { ok: false as const, reason: "not_found" as const };
-
     const { error } = await supabase
       .from("reservations")
-      .update({ status: "cancelled", cancelled_at: new Date().toISOString() })
-      .eq("id", row.id)
+      .update({ status: "withdrawn" })
+      .eq("id", data.reservationId)
       .eq("user_id", userId);
     if (error) return { ok: false as const, reason: "error" as const };
-
-    await refreshCampaignCounts(row.campaign_id);
     return { ok: true as const };
   });
 
@@ -248,13 +214,9 @@ export const setSaved = createServerFn({ method: "POST" })
     if (data.saved) {
       await supabase
         .from("saved_products")
-        .upsert({ product_id: data.productId, user_id: userId }, { onConflict: "product_id,user_id" });
+        .upsert({ product_id: data.productId, user_id: userId }, { onConflict: "user_id,product_id" });
     } else {
-      await supabase
-        .from("saved_products")
-        .delete()
-        .eq("product_id", data.productId)
-        .eq("user_id", userId);
+      await supabase.from("saved_products").delete().eq("product_id", data.productId).eq("user_id", userId);
     }
     return { ok: true as const, saved: data.saved };
   });
@@ -262,19 +224,19 @@ export const setSaved = createServerFn({ method: "POST" })
 export const setSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ productId: z.string().uuid(), subscribed: z.boolean() }).parse(input),
+    z.object({ campaignId: z.string().uuid(), subscribed: z.boolean() }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.subscribed) {
       await supabase
         .from("campaign_subscriptions")
-        .upsert({ product_id: data.productId, user_id: userId }, { onConflict: "product_id,user_id" });
+        .upsert({ campaign_id: data.campaignId, user_id: userId }, { onConflict: "user_id,campaign_id" });
     } else {
       await supabase
         .from("campaign_subscriptions")
         .delete()
-        .eq("product_id", data.productId)
+        .eq("campaign_id", data.campaignId)
         .eq("user_id", userId);
     }
     return { ok: true as const, subscribed: data.subscribed };

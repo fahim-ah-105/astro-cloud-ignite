@@ -12,6 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LocaleRouteRouteImport } from './routes/$locale/route'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleDiscoverRouteImport } from './routes/$locale/discover'
+import { Route as LocaleHowItWorksRouteImport } from './routes/$locale/how-it-works'
+import { Route as LocaleMostRequestedRouteImport } from './routes/$locale/most-requested'
+import { Route as LocalePoliciesRouteImport } from './routes/$locale/policies'
+import { Route as LocaleReviewsRouteImport } from './routes/$locale/reviews'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,28 +33,92 @@ const LocaleIndexRoute = LocaleIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
+const LocaleDiscoverRoute = LocaleDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleHowItWorksRoute = LocaleHowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleMostRequestedRoute = LocaleMostRequestedRouteImport.update({
+  id: '/most-requested',
+  path: '/most-requested',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocalePoliciesRoute = LocalePoliciesRouteImport.update({
+  id: '/policies',
+  path: '/policies',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleReviewsRoute = LocaleReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale': typeof LocaleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/discover': typeof LocaleDiscoverRoute
+  '/$locale/how-it-works': typeof LocaleHowItWorksRoute
+  '/$locale/most-requested': typeof LocaleMostRequestedRoute
+  '/$locale/policies': typeof LocalePoliciesRoute
+  '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$locale' | '/$locale/'
+  fullPaths:
+    | '/'
+    | '/$locale'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$locale'
-  id: '__root__' | '/' | '/$locale' | '/$locale/'
+  to:
+    | '/'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale'
+  id:
+    | '__root__'
+    | '/'
+    | '/$locale'
+    | '/$locale/discover'
+    | '/$locale/how-it-works'
+    | '/$locale/most-requested'
+    | '/$locale/policies'
+    | '/$locale/reviews'
+    | '/$locale/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -80,14 +149,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleIndexRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
+    '/$locale/discover': {
+      id: '/$locale/discover'
+      path: '/discover'
+      fullPath: '/$locale/discover'
+      preLoaderRoute: typeof LocaleDiscoverRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/how-it-works': {
+      id: '/$locale/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/$locale/how-it-works'
+      preLoaderRoute: typeof LocaleHowItWorksRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/most-requested': {
+      id: '/$locale/most-requested'
+      path: '/most-requested'
+      fullPath: '/$locale/most-requested'
+      preLoaderRoute: typeof LocaleMostRequestedRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/policies': {
+      id: '/$locale/policies'
+      path: '/policies'
+      fullPath: '/$locale/policies'
+      preLoaderRoute: typeof LocalePoliciesRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/reviews': {
+      id: '/$locale/reviews'
+      path: '/reviews'
+      fullPath: '/$locale/reviews'
+      preLoaderRoute: typeof LocaleReviewsRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
   }
 }
 
 interface LocaleRouteRouteChildren {
+  LocaleDiscoverRoute: typeof LocaleDiscoverRoute
+  LocaleHowItWorksRoute: typeof LocaleHowItWorksRoute
+  LocaleMostRequestedRoute: typeof LocaleMostRequestedRoute
+  LocalePoliciesRoute: typeof LocalePoliciesRoute
+  LocaleReviewsRoute: typeof LocaleReviewsRoute
   LocaleIndexRoute: typeof LocaleIndexRoute
 }
 
 const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
+  LocaleDiscoverRoute: LocaleDiscoverRoute,
+  LocaleHowItWorksRoute: LocaleHowItWorksRoute,
+  LocaleMostRequestedRoute: LocaleMostRequestedRoute,
+  LocalePoliciesRoute: LocalePoliciesRoute,
+  LocaleReviewsRoute: LocaleReviewsRoute,
   LocaleIndexRoute: LocaleIndexRoute,
 }
 

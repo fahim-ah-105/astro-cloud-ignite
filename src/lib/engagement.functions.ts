@@ -147,7 +147,7 @@ export const setReservation = createServerFn({ method: "POST" })
     z
       .object({
         campaignId: z.string().uuid(),
-        variantId: z.string().uuid().nullable().optional(),
+        variantId: z.string().uuid(),
         quantity: z.number().int().min(1).max(MAX_RESERVATION_QTY),
         subscribe: z.boolean().optional(),
         acknowledged: z.literal(true),
@@ -172,7 +172,7 @@ export const setReservation = createServerFn({ method: "POST" })
       {
         campaign_id: data.campaignId,
         user_id: userId,
-        variant_id: data.variantId ?? null,
+        variant_id: data.variantId,
         quantity: data.quantity,
         status: "active",
         acknowledged: true,

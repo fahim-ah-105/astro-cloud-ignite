@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LocaleRouteRouteImport } from './routes/$locale/route'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAccountRouteImport } from './routes/$locale/account'
 import { Route as LocaleAuthRouteImport } from './routes/$locale/auth'
 import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
 import { Route as LocaleDiscoverRouteImport } from './routes/$locale/discover'
@@ -19,6 +20,7 @@ import { Route as LocaleHowItWorksRouteImport } from './routes/$locale/how-it-wo
 import { Route as LocaleMostRequestedRouteImport } from './routes/$locale/most-requested'
 import { Route as LocalePoliciesRouteImport } from './routes/$locale/policies'
 import { Route as LocaleReviewsRouteImport } from './routes/$locale/reviews'
+import { Route as LocaleSavedRouteImport } from './routes/$locale/saved'
 import { Route as LocaleBatchesPublicIdRouteImport } from './routes/$locale/batches.$publicId'
 import { Route as LocalePSlugRouteImport } from './routes/$locale/p.$slug'
 
@@ -35,6 +37,11 @@ const LocaleRouteRoute = LocaleRouteRouteImport.update({
 const LocaleIndexRoute = LocaleIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleAccountRoute = LocaleAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
 const LocaleAuthRoute = LocaleAuthRouteImport.update({
@@ -72,6 +79,11 @@ const LocaleReviewsRoute = LocaleReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
+const LocaleSavedRoute = LocaleSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
 const LocaleBatchesPublicIdRoute = LocaleBatchesPublicIdRouteImport.update({
   id: '/batches/$publicId',
   path: '/batches/$publicId',
@@ -86,6 +98,7 @@ const LocalePSlugRoute = LocalePSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/account': typeof LocaleAccountRoute
   '/$locale/auth': typeof LocaleAuthRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
@@ -93,12 +106,14 @@ export interface FileRoutesByFullPath {
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
   '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$locale/account': typeof LocaleAccountRoute
   '/$locale/auth': typeof LocaleAuthRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
@@ -106,6 +121,7 @@ export interface FileRoutesByTo {
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
   '/$locale': typeof LocaleIndexRoute
   '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
   '/$locale/p/$slug': typeof LocalePSlugRoute
@@ -114,6 +130,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/account': typeof LocaleAccountRoute
   '/$locale/auth': typeof LocaleAuthRoute
   '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
@@ -121,6 +138,7 @@ export interface FileRoutesById {
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
+  '/$locale/saved': typeof LocaleSavedRoute
   '/$locale/': typeof LocaleIndexRoute
   '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
   '/$locale/p/$slug': typeof LocalePSlugRoute
@@ -130,6 +148,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$locale'
+    | '/$locale/account'
     | '/$locale/auth'
     | '/$locale/contact'
     | '/$locale/discover'
@@ -137,12 +156,14 @@ export interface FileRouteTypes {
     | '/$locale/most-requested'
     | '/$locale/policies'
     | '/$locale/reviews'
+    | '/$locale/saved'
     | '/$locale/'
     | '/$locale/batches/$publicId'
     | '/$locale/p/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$locale/account'
     | '/$locale/auth'
     | '/$locale/contact'
     | '/$locale/discover'
@@ -150,6 +171,7 @@ export interface FileRouteTypes {
     | '/$locale/most-requested'
     | '/$locale/policies'
     | '/$locale/reviews'
+    | '/$locale/saved'
     | '/$locale'
     | '/$locale/batches/$publicId'
     | '/$locale/p/$slug'
@@ -157,6 +179,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$locale'
+    | '/$locale/account'
     | '/$locale/auth'
     | '/$locale/contact'
     | '/$locale/discover'
@@ -164,6 +187,7 @@ export interface FileRouteTypes {
     | '/$locale/most-requested'
     | '/$locale/policies'
     | '/$locale/reviews'
+    | '/$locale/saved'
     | '/$locale/'
     | '/$locale/batches/$publicId'
     | '/$locale/p/$slug'
@@ -195,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/$locale/'
       preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/account': {
+      id: '/$locale/account'
+      path: '/account'
+      fullPath: '/$locale/account'
+      preLoaderRoute: typeof LocaleAccountRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
     '/$locale/auth': {
@@ -246,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleReviewsRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
+    '/$locale/saved': {
+      id: '/$locale/saved'
+      path: '/saved'
+      fullPath: '/$locale/saved'
+      preLoaderRoute: typeof LocaleSavedRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
     '/$locale/batches/$publicId': {
       id: '/$locale/batches/$publicId'
       path: '/batches/$publicId'
@@ -264,6 +302,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface LocaleRouteRouteChildren {
+  LocaleAccountRoute: typeof LocaleAccountRoute
   LocaleAuthRoute: typeof LocaleAuthRoute
   LocaleContactRoute: typeof LocaleContactRoute
   LocaleDiscoverRoute: typeof LocaleDiscoverRoute
@@ -271,12 +310,14 @@ interface LocaleRouteRouteChildren {
   LocaleMostRequestedRoute: typeof LocaleMostRequestedRoute
   LocalePoliciesRoute: typeof LocalePoliciesRoute
   LocaleReviewsRoute: typeof LocaleReviewsRoute
+  LocaleSavedRoute: typeof LocaleSavedRoute
   LocaleIndexRoute: typeof LocaleIndexRoute
   LocaleBatchesPublicIdRoute: typeof LocaleBatchesPublicIdRoute
   LocalePSlugRoute: typeof LocalePSlugRoute
 }
 
 const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
+  LocaleAccountRoute: LocaleAccountRoute,
   LocaleAuthRoute: LocaleAuthRoute,
   LocaleContactRoute: LocaleContactRoute,
   LocaleDiscoverRoute: LocaleDiscoverRoute,
@@ -284,6 +325,7 @@ const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
   LocaleMostRequestedRoute: LocaleMostRequestedRoute,
   LocalePoliciesRoute: LocalePoliciesRoute,
   LocaleReviewsRoute: LocaleReviewsRoute,
+  LocaleSavedRoute: LocaleSavedRoute,
   LocaleIndexRoute: LocaleIndexRoute,
   LocaleBatchesPublicIdRoute: LocaleBatchesPublicIdRoute,
   LocalePSlugRoute: LocalePSlugRoute,

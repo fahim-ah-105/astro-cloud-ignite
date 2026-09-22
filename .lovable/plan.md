@@ -1,62 +1,68 @@
-# Buy, Sell, Trade — Phase 0: Design System & Static Pages
+# Buy, Sell, Trade — Complete Design Build
 
-Scope: blueprint step 3 only. Shared design tokens, a component showcase, and page layouts built from clearly labeled local fixtures. No accounts, no database, no votes recorded. Bangla and English from day one.
-
-## What you'll be able to see
-
-- Every page of the storefront, in both Bangla and English, with realistic placeholder content
-- A showcase page listing every colour, text size, button, badge, card and form state in one place
-- Honest empty states: "no products yet", "no staff videos yet", "no batch updates yet"
-- A language toggle that keeps you on the same page
-
-## Pages built in this phase
-
-| Route | Content |
-| --- | --- |
-| `/bn/`, `/en/` | Launch notice, hero, how-it-works strip, community-featured grid, discover, staff-review tiles, batch updates, FAQ |
-| `/{locale}/discover` | Filter sidebar/drawer, sort control, product grid, pagination |
-| `/{locale}/categories/{slug}` | Category landing with the same grid |
-| `/{locale}/products/{slug}` | Gallery, availability + evidence badges, price with qualifier, vote panel, evidence panel, specs, timeline, related |
-| `/{locale}/most-requested` | Vote-ranked list with interest progress |
-| `/{locale}/reviews` | Staff demo / unboxing tiles with provenance labels |
-| `/{locale}/how-it-works` | Vote → reserve → import review → buy explanation |
-| `/{locale}/batches/{publicId}` | Dated import update timeline |
-| `/{locale}/saved`, `/{locale}/account` | Logged-out and empty-state layouts |
-| `/{locale}/sign-in` | Form layout only, not wired |
-| `/{locale}/contact`, `/{locale}/policies/{slug}` | Support and policy templates |
-| `/design-system` | Full token and component showcase, both languages, noindex |
-
-Root `/` redirects to `/bn/`. Phase 2 commerce routes (cart, checkout, available-now, orders) are not built.
+One full design pass covering every page in the blueprint, Bangla and English, in a single build. Not split into phases. Pages are built with clearly labeled sample content; the look, copy, and structure are final-quality throughout.
 
 ## Design direction
 
-Warm ivory canvas, deep forest-green actions, charcoal-green text, restrained warm-orange accent — exactly the palette in the blueprint. Product photography carries the visual weight. 4:3 card canvases, product never cropped. No gradients, no fake urgency, no banner wall.
+Warm ivory canvas, deep forest-green actions, charcoal-green text, restrained warm-orange accent — the exact palette from section 7.2 of your blueprint:
 
-Typography: Noto Sans with Noto Sans Bengali, self-hosted, Bangla script tested for conjuncts and wrapping. No uppercase or letter-spacing on Bangla.
+- canvas `#f8f6ef`, surface `#ffffff`, ink `#172b24`, muted `#57645d`
+- brand `#176b4b`, brand hover `#115138`, brand soft `#e7f1eb`
+- warm `#b84a22`, warm soft `#fff0e4`, danger `#b42318`
+- borders `#dce3dd`, control outlines `#7e9084`
 
-Breakpoints and spacing follow section 7.3: 2-column cards on phones, 3 on tablets, 4 on desktop; 44px minimum touch targets; product titles wrap instead of truncating.
+Typography: Noto Sans with Noto Sans Bengali, self-hosted, `font-display: swap`. Bangla tested for conjuncts and wrapping; never uppercased or letter-spaced.
+
+Feel: a trustworthy discovery club. Real product photography carries the visual weight on 4:3 card canvases, product never cropped. No gradient walls, no autoplay carousels, no countdown timers, no fake urgency, no marketplace clutter. Generous whitespace, 1rem card radius, one soft shadow, 150–220ms transitions that respect reduced-motion.
+
+Layout per section 7.3: 16px gutters and 2-column cards under 640px, 3 columns to 1023px, 4 columns and a 74rem container above; product detail splits 7/5 gallery to action panel on desktop, single column with one sticky action bar on mobile. 44px minimum touch targets, titles wrap rather than truncate.
+
+## Every page, built in this pass
+
+**Discovery and product**
+- `/bn/`, `/en/` — launch-stage notice, hero, four-step how-it-works strip, community-featured grid, discover section with category chips, staff review tiles, recent batch updates, FAQ, full footer
+- `/{locale}/discover` — search, filter drawer on mobile and sidebar on desktop, sort control, product grid, pagination
+- `/{locale}/categories/{slug}` — crawlable category landing
+- `/{locale}/products/{slug}` — gallery with video poster, availability and evidence badges, price with qualifier, variant selector, vote panel, reservation form, evidence panel with strengths and limitations, specifications, dated import timeline, state-specific delivery and cancellation copy, related products
+- `/{locale}/most-requested` — vote-ranked list with interest progress toward the 100-vote goal
+- `/{locale}/reviews` — staff demonstration, unboxing, tested, and supplier-media tiles with provenance labels
+
+**Explanation and trust**
+- `/{locale}/how-it-works`, `/{locale}/batches/{publicId}`, `/{locale}/contact`, `/{locale}/policies/{slug}` (terms, privacy, delivery, cancellation, returns and warranty)
+
+**Account**
+- `/{locale}/sign-in`, `/{locale}/saved`, `/{locale}/account` with my votes, free reservations, saved products, update subscriptions, profile
+
+**Commerce screens (designed now, switched off)**
+- `/{locale}/available-now`, `/{locale}/cart`, `/{locale}/checkout` with Bangladesh address fields, `/{locale}/account/orders/{id}` tracking
+
+**Operational**
+- `/admin` dashboard, product editor, campaign and threshold controls, import batch manager, moderation queue — layouts and states, noindex
+- `/design-system` — every token, component variant, both languages, long-title and error and empty states, noindex
+
+Root `/` redirects to `/bn/`. Commerce pages exist as finished designs but carry no live buy action; the `ordersEnabled` flag stays off, so nothing in the public navigation offers a purchase.
 
 ## Components
 
-Button, input/select/checkbox, status badge, product card, price, interest progress, gallery/video tile, evidence panel, variant selector, reservation form, import timeline, filter drawer, toast, empty/error state, dialog, accordion — each with the variants and states listed in section 7.4, all visible on `/design-system`.
+Button and icon button, input, select, checkbox, status badge, product card, price, interest progress, gallery and video tile, evidence panel, variant selector, reservation form, import timeline, filter drawer, toast, empty and error states, dialog, accordion, order summary — each with the full variant and state set from section 7.4, all shown on `/design-system`.
 
-Accessibility target WCAG 2.2 AA: semantic landmarks, one H1 per page, visible focus rings, status never conveyed by colour alone, reduced-motion support, real alt text.
+All eight public lifecycle states from section 5.2 are demonstrable on real cards: interest open, community-featured, import approved, on the way, in Bangladesh, arrived but ordering closed, sold out, paused or cancelled.
 
-## Content rules honoured in this phase
+## Content honesty rules held throughout
 
-- Every product card and detail page is driven by a lifecycle state, so all eight public states from section 5.2 are demonstrable
-- Fixture content is labeled as sample data so nothing reads as a real product, review, shipment, or price
-- No "Buy now", no cart, no seven-day delivery promise anywhere, since commerce is off
-- Interest goal shown as 100 accepted votes; reservation and procurement targets stay private
+- Sample content is labeled as sample; no invented reviews, shipments, registration numbers, or addresses
+- "Vote" and "Free pre-order reservation" never phrased as an order; the no-payment explanation sits next to every action, not in an accordion
+- Interest goal published at 100 accepted votes; reservation and procurement targets stay private
+- No seven-day delivery promise appears anywhere outside a confirmed in-stock order screen
+
+Accessibility target WCAG 2.2 AA: semantic landmarks, one H1 per page, visible focus rings including on brand surfaces, status never by colour alone, associated inline errors, zoom and reflow, reduced motion, real alt text.
 
 ## Technical notes
 
-Built on this workspace's stack: React with TanStack Start, server-rendered pages so product content is in the initial HTML and crawlable, Tailwind driven by a single semantic token layer in `src/styles.css` mirroring the blueprint's `tokens.css` variables. No component hardcodes a colour.
+React on TanStack Start, server-rendered so product content is in the initial HTML and crawlable. A single semantic token layer in `src/styles.css` mirrors your `tokens.css` variables; no component hardcodes a colour. Locale is a route parameter with all copy in per-locale dictionaries, so translation is a data change. Sample content lives in one typed `src/data/fixtures/` module shaped to the section 11 data model.
 
-Locale is a route parameter (`src/routes/$locale/...`), with all copy in per-locale dictionary files so translation is a data change, not a code change. Fixtures live in one `src/data/fixtures/` folder, typed against the section 11 data model, so swapping them for a real backend later touches one boundary.
+Portability: tokens, copy dictionaries, component markup, and page structure carry over to Astro later; the routing wrapper and any future server calls would be rewritten against Firebase.
 
-Portability note: because the entire data layer is a single typed fixtures module and the locale/copy layer is data, a later move to Astro + Express + Firebase would reuse the tokens, copy, component markup, and page structure; the routing wrapper and eventual server calls would be rewritten.
+## Not included
 
-## Not in this phase
-
-Sign-in, voting, reservations, admin tools, thresholds firing, notifications, caching, image uploads, payments. Those are Phase 1 and Phase 2, planned separately once you've approved the look.
+Working sign-in, recorded votes and reservations, live admin writes, notifications, caching, image uploads, payments. This pass delivers the complete designed product; wiring it to real data and accounts is the next conversation.

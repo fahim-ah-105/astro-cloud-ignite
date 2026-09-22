@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LocaleRouteRouteImport } from './routes/$locale/route'
 import { Route as LocaleIndexRouteImport } from './routes/$locale/index'
+import { Route as LocaleAuthRouteImport } from './routes/$locale/auth'
+import { Route as LocaleContactRouteImport } from './routes/$locale/contact'
 import { Route as LocaleDiscoverRouteImport } from './routes/$locale/discover'
 import { Route as LocaleHowItWorksRouteImport } from './routes/$locale/how-it-works'
 import { Route as LocaleMostRequestedRouteImport } from './routes/$locale/most-requested'
@@ -33,6 +35,16 @@ const LocaleRouteRoute = LocaleRouteRouteImport.update({
 const LocaleIndexRoute = LocaleIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleAuthRoute = LocaleAuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocaleContactRoute = LocaleContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
 const LocaleDiscoverRoute = LocaleDiscoverRouteImport.update({
@@ -74,6 +86,8 @@ const LocalePSlugRoute = LocalePSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
   '/$locale/how-it-works': typeof LocaleHowItWorksRoute
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
@@ -85,6 +99,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
   '/$locale/how-it-works': typeof LocaleHowItWorksRoute
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
@@ -98,6 +114,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$locale': typeof LocaleRouteRouteWithChildren
+  '/$locale/auth': typeof LocaleAuthRoute
+  '/$locale/contact': typeof LocaleContactRoute
   '/$locale/discover': typeof LocaleDiscoverRoute
   '/$locale/how-it-works': typeof LocaleHowItWorksRoute
   '/$locale/most-requested': typeof LocaleMostRequestedRoute
@@ -112,6 +130,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$locale'
+    | '/$locale/auth'
+    | '/$locale/contact'
     | '/$locale/discover'
     | '/$locale/how-it-works'
     | '/$locale/most-requested'
@@ -123,6 +143,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$locale/auth'
+    | '/$locale/contact'
     | '/$locale/discover'
     | '/$locale/how-it-works'
     | '/$locale/most-requested'
@@ -135,6 +157,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$locale'
+    | '/$locale/auth'
+    | '/$locale/contact'
     | '/$locale/discover'
     | '/$locale/how-it-works'
     | '/$locale/most-requested'
@@ -171,6 +195,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/$locale/'
       preLoaderRoute: typeof LocaleIndexRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/auth': {
+      id: '/$locale/auth'
+      path: '/auth'
+      fullPath: '/$locale/auth'
+      preLoaderRoute: typeof LocaleAuthRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/contact': {
+      id: '/$locale/contact'
+      path: '/contact'
+      fullPath: '/$locale/contact'
+      preLoaderRoute: typeof LocaleContactRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
     '/$locale/discover': {
@@ -226,6 +264,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface LocaleRouteRouteChildren {
+  LocaleAuthRoute: typeof LocaleAuthRoute
+  LocaleContactRoute: typeof LocaleContactRoute
   LocaleDiscoverRoute: typeof LocaleDiscoverRoute
   LocaleHowItWorksRoute: typeof LocaleHowItWorksRoute
   LocaleMostRequestedRoute: typeof LocaleMostRequestedRoute
@@ -237,6 +277,8 @@ interface LocaleRouteRouteChildren {
 }
 
 const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
+  LocaleAuthRoute: LocaleAuthRoute,
+  LocaleContactRoute: LocaleContactRoute,
   LocaleDiscoverRoute: LocaleDiscoverRoute,
   LocaleHowItWorksRoute: LocaleHowItWorksRoute,
   LocaleMostRequestedRoute: LocaleMostRequestedRoute,

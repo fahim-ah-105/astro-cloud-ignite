@@ -283,7 +283,7 @@ export const en = {
     loadBody: "Something went wrong on our side. Try again, or go back to the home page.",
     signInRequired: "Please sign in first.",
   },
-} as const;
+};
 
 export const bn: Dict = {
   brand: "বৈশান ট্রেড",

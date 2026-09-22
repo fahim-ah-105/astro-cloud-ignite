@@ -1,68 +1,69 @@
-# Buy, Sell, Trade — Complete Design Build
+# Baishan Trade — Complete Build
 
-One full design pass covering every page in the blueprint, Bangla and English, in a single build. Not split into phases. Pages are built with clearly labeled sample content; the look, copy, and structure are final-quality throughout.
+The full product in one pass: every page designed and finished, plus working sign-in, real recorded votes and reservations, live admin tools, notifications, image uploads, and caching. Bangla and English throughout.
+
+Brand name: **Baishan Trade** (replacing "Buy, Sell, Trade" in the blueprint). A compact "BT" mark for favicon and mobile; full name in header, footer, and accessible labels.
 
 ## Design direction
 
-Warm ivory canvas, deep forest-green actions, charcoal-green text, restrained warm-orange accent — the exact palette from section 7.2 of your blueprint:
+Warm ivory canvas, deep forest-green actions, charcoal-green text, restrained warm-orange accent — the palette from section 7.2:
 
-- canvas `#f8f6ef`, surface `#ffffff`, ink `#172b24`, muted `#57645d`
-- brand `#176b4b`, brand hover `#115138`, brand soft `#e7f1eb`
-- warm `#b84a22`, warm soft `#fff0e4`, danger `#b42318`
-- borders `#dce3dd`, control outlines `#7e9084`
+canvas `#f8f6ef` · surface `#ffffff` · ink `#172b24` · muted `#57645d` · brand `#176b4b` · brand hover `#115138` · brand soft `#e7f1eb` · warm `#b84a22` · warm soft `#fff0e4` · danger `#b42318` · border `#dce3dd` · control outline `#7e9084`
 
-Typography: Noto Sans with Noto Sans Bengali, self-hosted, `font-display: swap`. Bangla tested for conjuncts and wrapping; never uppercased or letter-spaced.
+Typography: Noto Sans with Noto Sans Bengali, self-hosted, `font-display: swap`, Bangla tested for conjuncts and wrapping, never uppercased or letter-spaced.
 
-Feel: a trustworthy discovery club. Real product photography carries the visual weight on 4:3 card canvases, product never cropped. No gradient walls, no autoplay carousels, no countdown timers, no fake urgency, no marketplace clutter. Generous whitespace, 1rem card radius, one soft shadow, 150–220ms transitions that respect reduced-motion.
+Feel: a trustworthy discovery club. Real product photography on 4:3 canvases, product never cropped. No gradient walls, no autoplay carousels, no countdown timers, no fake urgency. Generous whitespace, 1rem card radius, one soft shadow, 150–220ms motion that respects reduced-motion.
 
-Layout per section 7.3: 16px gutters and 2-column cards under 640px, 3 columns to 1023px, 4 columns and a 74rem container above; product detail splits 7/5 gallery to action panel on desktop, single column with one sticky action bar on mobile. 44px minimum touch targets, titles wrap rather than truncate.
+Layout per section 7.3: 2-column cards under 640px, 3 to 1023px, 4 above in a 74rem container; product detail 7/5 gallery-to-action on desktop, single column with one sticky action bar on mobile. 44px touch targets, titles wrap.
 
-## Every page, built in this pass
+Accessibility target WCAG 2.2 AA: landmarks, one H1 per page, visible focus including on brand surfaces, status never by colour alone, associated inline errors, zoom and reflow, real alt text.
 
-**Discovery and product**
-- `/bn/`, `/en/` — launch-stage notice, hero, four-step how-it-works strip, community-featured grid, discover section with category chips, staff review tiles, recent batch updates, FAQ, full footer
-- `/{locale}/discover` — search, filter drawer on mobile and sidebar on desktop, sort control, product grid, pagination
-- `/{locale}/categories/{slug}` — crawlable category landing
-- `/{locale}/products/{slug}` — gallery with video poster, availability and evidence badges, price with qualifier, variant selector, vote panel, reservation form, evidence panel with strengths and limitations, specifications, dated import timeline, state-specific delivery and cancellation copy, related products
-- `/{locale}/most-requested` — vote-ranked list with interest progress toward the 100-vote goal
-- `/{locale}/reviews` — staff demonstration, unboxing, tested, and supplier-media tiles with provenance labels
+## Pages
 
-**Explanation and trust**
-- `/{locale}/how-it-works`, `/{locale}/batches/{publicId}`, `/{locale}/contact`, `/{locale}/policies/{slug}` (terms, privacy, delivery, cancellation, returns and warranty)
+**Discovery** — home, discover with filters and sort, category landings, product detail (gallery, evidence and availability badges, qualified price, variant selector, vote, reservation, evidence panel with strengths and limitations, specs, dated import timeline, related), most-requested ranking, staff reviews.
 
-**Account**
-- `/{locale}/sign-in`, `/{locale}/saved`, `/{locale}/account` with my votes, free reservations, saved products, update subscriptions, profile
+**Trust** — how it works, batch update pages, contact and complaint process, policies (terms, privacy, delivery, cancellation, returns and warranty).
 
-**Commerce screens (designed now, switched off)**
-- `/{locale}/available-now`, `/{locale}/cart`, `/{locale}/checkout` with Bangladesh address fields, `/{locale}/account/orders/{id}` tracking
+**Account** — sign-in, saved products, account home with my votes, free reservations, update subscriptions, profile, order history.
 
-**Operational**
-- `/admin` dashboard, product editor, campaign and threshold controls, import batch manager, moderation queue — layouts and states, noindex
-- `/design-system` — every token, component variant, both languages, long-title and error and empty states, noindex
+**Commerce** — available now, cart, checkout with Bangladesh address fields (district, upazila/thana, street and landmark, `+880` phone), order tracking.
 
-Root `/` redirects to `/bn/`. Commerce pages exist as finished designs but carry no live buy action; the `ordersEnabled` flag stays off, so nothing in the public navigation offers a purchase.
+**Admin** — dashboard with demand metrics and CSV export, product editor with image upload, campaign and threshold controls, import batch manager, reservation and vote moderation, notification sender.
 
-## Components
+**Showcase** — `/design-system` with every token, component variant, both languages, long titles, error, loading, and empty states. Noindex.
 
-Button and icon button, input, select, checkbox, status badge, product card, price, interest progress, gallery and video tile, evidence panel, variant selector, reservation form, import timeline, filter drawer, toast, empty and error states, dialog, accordion, order summary — each with the full variant and state set from section 7.4, all shown on `/design-system`.
+Root `/` redirects to `/bn/`. All eight public lifecycle states from section 5.2 render on real cards.
 
-All eight public lifecycle states from section 5.2 are demonstrable on real cards: interest open, community-featured, import approved, on the way, in Bangladesh, arrived but ordering closed, sold out, paused or cancelled.
+## Working functionality
 
-## Content honesty rules held throughout
+**Accounts** — email and password sign-in plus Google. Email verification required before a vote or reservation counts, matching your rule that anonymous accounts cannot vote. Profiles store display name, preferred language, and district. Staff and admin roles live in a separate roles table, never on the profile, so nobody can promote themselves.
 
-- Sample content is labeled as sample; no invented reviews, shipments, registration numbers, or addresses
-- "Vote" and "Free pre-order reservation" never phrased as an order; the no-payment explanation sits next to every action, not in an accordion
-- Interest goal published at 100 accepted votes; reservation and procurement targets stay private
-- No seven-day delivery promise appears anywhere outside a confirmed in-stock order screen
+**Voting** — one accepted vote per account per campaign, enforced in the database. Set-state rather than toggle, so a retried request never flips the result. Withdraw while voting is open. Per-account and per-window rate limits, plus an anomaly report in admin for suspicious bursts.
 
-Accessibility target WCAG 2.2 AA: semantic landmarks, one H1 per page, visible focus rings including on brand surfaces, status never by colour alone, associated inline errors, zoom and reflow, reduced motion, real alt text.
+**Reservations** — signed-in, verified contact, chosen variant, quantity capped at 3 per SKU per account, explicit nonbinding acknowledgement. Editing replaces rather than duplicates. Self-service cancel, always allowed even when a campaign is paused. Unique reserving accounts, reservation records, and intended units tracked separately.
+
+**Thresholds** — 100 accepted votes publishes the community-featured badge and records the moment it was reached; reservation and procurement targets stay private. Crossing a threshold notifies staff and never purchases anything. Ranking: votes, then reserving accounts, then time reached, then stable ID.
+
+**Admin writes** — publish and hide products, edit campaigns and targets, move import batches through their states with dated public updates, moderate votes and reservations, export demand data. Every state change is server-validated and written to an audit log with who and when.
+
+**Notifications** — email for batch updates, goal reached, import approved, stock arrived, and campaign cancelled. Subscription per campaign is separate from marketing consent, which stays off by default. Unsubscribe from the account page without contacting staff.
+
+**Images** — admin uploads product and review media; originals stored privately, public derivatives served from CDN with responsive sizes.
+
+**Caching** — public catalogue, category, and vote-count reads are cached server-side and invalidated on write, so popular pages stay fast on slow mobile connections.
+
+**Feature flags** — `interestEnabled`, `reservationsEnabled`, `ordersEnabled`, `paidPreordersEnabled`, `demoMode` held server-side. Hiding a button never enables or disables a business action.
+
+## Payments — decision needed
+
+Checkout, cart, orders, delivery quotes, and COD flow are all built and working end to end. The money step is the open question: SSLCOMMERZ and bKash are not available as built-in integrations here, so I'd wire checkout to record the order and mark payment as pending, and either (a) launch with cash on delivery only, which needs no gateway, or (b) connect SSLCOMMERZ through its API once you have a merchant contract and credentials. Tell me which and I'll build to it. `ordersEnabled` stays off until you say otherwise.
 
 ## Technical notes
 
-React on TanStack Start, server-rendered so product content is in the initial HTML and crawlable. A single semantic token layer in `src/styles.css` mirrors your `tokens.css` variables; no component hardcodes a colour. Locale is a route parameter with all copy in per-locale dictionaries, so translation is a data change. Sample content lives in one typed `src/data/fixtures/` module shaped to the section 11 data model.
+React on TanStack Start, server-rendered so catalogue content is in the initial HTML and crawlable. Lovable Cloud provides the database, authentication, file storage, and server code — no external accounts. Semantic design tokens live in `src/styles.css`; no component hardcodes a colour. Locale is a route parameter with copy in per-locale dictionaries. Database tables follow the section 11 model with row-level security on every table: public reads limited to published safe columns, writes scoped to the owning account, admin actions gated by the roles table.
 
-Portability: tokens, copy dictionaries, component markup, and page structure carry over to Astro later; the routing wrapper and any future server calls would be rewritten against Firebase.
+Portability note: tokens, copy, component markup, and page structure port to Astro later; database, auth, and server code would be rewritten against Firebase.
 
-## Not included
+## Starting content
 
-Working sign-in, recorded votes and reservations, live admin writes, notifications, caching, image uploads, payments. This pass delivers the complete designed product; wiring it to real data and accounts is the next conversation.
+The site launches with honest empty states — no invented products, reviews, shipments, prices, registration numbers, or addresses. I'll add a small set of clearly marked sample products so you can see every lifecycle state working; you replace them from the admin panel.

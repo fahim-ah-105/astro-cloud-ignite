@@ -142,7 +142,7 @@ function ProductPage() {
                   (review: {
                     id: string;
                     kind: string;
-                    reviewer_name: string;
+                    reviewer_name: string | null;
                     reviewed_on: string;
                     conditions_bn: string | null;
                     conditions_en: string | null;

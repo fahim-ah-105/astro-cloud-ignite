@@ -17,6 +17,8 @@ import { Route as LocaleHowItWorksRouteImport } from './routes/$locale/how-it-wo
 import { Route as LocaleMostRequestedRouteImport } from './routes/$locale/most-requested'
 import { Route as LocalePoliciesRouteImport } from './routes/$locale/policies'
 import { Route as LocaleReviewsRouteImport } from './routes/$locale/reviews'
+import { Route as LocaleBatchesPublicIdRouteImport } from './routes/$locale/batches.$publicId'
+import { Route as LocalePSlugRouteImport } from './routes/$locale/p.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +60,16 @@ const LocaleReviewsRoute = LocaleReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => LocaleRouteRoute,
 } as any)
+const LocaleBatchesPublicIdRoute = LocaleBatchesPublicIdRouteImport.update({
+  id: '/batches/$publicId',
+  path: '/batches/$publicId',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
+const LocalePSlugRoute = LocalePSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => LocaleRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +80,8 @@ export interface FileRoutesByFullPath {
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale/': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,6 +91,8 @@ export interface FileRoutesByTo {
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,6 +104,8 @@ export interface FileRoutesById {
   '/$locale/policies': typeof LocalePoliciesRoute
   '/$locale/reviews': typeof LocaleReviewsRoute
   '/$locale/': typeof LocaleIndexRoute
+  '/$locale/batches/$publicId': typeof LocaleBatchesPublicIdRoute
+  '/$locale/p/$slug': typeof LocalePSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,6 +118,8 @@ export interface FileRouteTypes {
     | '/$locale/policies'
     | '/$locale/reviews'
     | '/$locale/'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -109,6 +129,8 @@ export interface FileRouteTypes {
     | '/$locale/policies'
     | '/$locale/reviews'
     | '/$locale'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
   id:
     | '__root__'
     | '/'
@@ -119,6 +141,8 @@ export interface FileRouteTypes {
     | '/$locale/policies'
     | '/$locale/reviews'
     | '/$locale/'
+    | '/$locale/batches/$publicId'
+    | '/$locale/p/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +208,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleReviewsRouteImport
       parentRoute: typeof LocaleRouteRoute
     }
+    '/$locale/batches/$publicId': {
+      id: '/$locale/batches/$publicId'
+      path: '/batches/$publicId'
+      fullPath: '/$locale/batches/$publicId'
+      preLoaderRoute: typeof LocaleBatchesPublicIdRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
+    '/$locale/p/$slug': {
+      id: '/$locale/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/$locale/p/$slug'
+      preLoaderRoute: typeof LocalePSlugRouteImport
+      parentRoute: typeof LocaleRouteRoute
+    }
   }
 }
 
@@ -194,6 +232,8 @@ interface LocaleRouteRouteChildren {
   LocalePoliciesRoute: typeof LocalePoliciesRoute
   LocaleReviewsRoute: typeof LocaleReviewsRoute
   LocaleIndexRoute: typeof LocaleIndexRoute
+  LocaleBatchesPublicIdRoute: typeof LocaleBatchesPublicIdRoute
+  LocalePSlugRoute: typeof LocalePSlugRoute
 }
 
 const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
@@ -203,6 +243,8 @@ const LocaleRouteRouteChildren: LocaleRouteRouteChildren = {
   LocalePoliciesRoute: LocalePoliciesRoute,
   LocaleReviewsRoute: LocaleReviewsRoute,
   LocaleIndexRoute: LocaleIndexRoute,
+  LocaleBatchesPublicIdRoute: LocaleBatchesPublicIdRoute,
+  LocalePSlugRoute: LocalePSlugRoute,
 }
 
 const LocaleRouteRouteWithChildren = LocaleRouteRoute._addFileChildren(
